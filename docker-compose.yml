@@ -11,9 +11,8 @@ services:
       - chat-ui
       - text-generation-inference
 
-  chat-ui-db:
-    image: ghcr.io/huggingface/chat-ui-db:latest
-    container_name: mongodb
+  mongodb:
+    image: mongo:latest
 
   chat-ui:
     image: ghcr.io/huggingface/chat-ui:latest
@@ -22,13 +21,15 @@ services:
       - MONGODB_URL=mongodb://mongodb:27017
     ports:
       - "3000:3000"
+    volumes:
+      - ./.env:/app/.env.local
     depends_on:
-      - chat-ui-db
+      - mongodb
       - text-generation-inference
 
   text-generation-inference:
     image: ghcr.io/huggingface/text-generation-inference:1.2-rocm
-    command: ["--max-total-tokens", "3080", "--max-input-length", "3072", "--max-batch-prefill-tokens", "3080", "--quantize", "gptq", "--model-id", "mzbac/CodeLlama-34b-guanaco-gptq"]
+    command: ["--max-total-tokens", "3080", "--max-input-length", "3072", "--max-batch-prefill-tokens", "3080", "--quantize", "awq", "--model-id", "mzbac/CodeLlama-34b-guanaco-awq"]
     volumes:
       - ./models:/data
     container_name: text-generation-inference
@@ -36,3 +37,5 @@ services:
       - "/dev/kfd"
       - "/dev/dri"
     shm_size: 1g
+    ports:
+      - "8080:80"
