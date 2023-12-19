@@ -39,3 +39,13 @@ services:
     shm_size: 1g
     ports:
       - "8080:80"
+
+  chat-flame-backend:
+    image: ghcr.io/chriamue/chat-flame-backend:main
+    environment:
+      - RUST_LOG=info
+    volumes:
+      - models:/tmp/models/
+
+volumes:
+  models:
