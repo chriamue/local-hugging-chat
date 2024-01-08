@@ -42,6 +42,7 @@ services:
 
   chat-flame-backend:
     image: ghcr.io/chriamue/chat-flame-backend:main
+    command: ["./chat-flame-backend", "--model", "phi-v2"]
     environment:
       - RUST_LOG=info
     volumes:
